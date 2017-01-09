@@ -1,0 +1,15 @@
+Package: netsim
+Type: Package
+Title: Scale free, Random graph, and Smallworld network's property comparisn with same number of edges and vertices
+Version: 0.1.0
+Author: Akanda Wahid -Ul- Ashraf, Katarzyna Musial-Gabrys, Marcin Budka
+Maintainer: Akanda Wahid -Ul- Ashraf <aashraf@bournemouth.ac.uk>
+Description: Please read the documentation  <link>
+License: GPL-3
+LazyData: TRUE
+RoxygenNote: 5.0.1
+Imports: ggplot2,
+         igraph,
+         stringr,
+         directlabels
+
