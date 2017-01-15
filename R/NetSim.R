@@ -312,6 +312,9 @@ gen_plots<- function(ScaleFreePowerRange,SmallWorldProbability,plot=C("point","l
 
   print("loading serialized object-randomGraphEdgeComparisn from hdd")
   randomGraphEdgeComparisn = readRDS(paste(savingDir,"randomGraphEdgeComparisn",sep =""), refhook = NULL)
+  #Testing
+  degreeDistributionPlot(givenObjects=randomGraphEdgeComparisn,SavingDir=savingDir,graphtype="random")
+
 
   dfRandomTemp = Plot2dListOfRandomGraphPropertiesMean(randomGraphEdgeComparisn,x="NumberOfEdges",y="GlobalClusteringCoefficent",xlabel = "Number of Edges",ylabel = "Global Clustering Coefficent")
   dfRandomTemp = cbind(dfRandomTemp,networkType="randomGraph")
@@ -360,10 +363,13 @@ gen_plots<- function(ScaleFreePowerRange,SmallWorldProbability,plot=C("point","l
 
       print(paste("loading serialized object from hdd:",NameScaleFree))
       Scalefree = readRDS(paste(savingDir,NameScaleFree,sep =""), refhook = NULL)
+      #Testing
+      degreeDistributionPlot(givenObject=Scalefree,savingDir,graphtype=NameScaleFree)
+
 
       print(paste("loading serialized object from hdd:",NameSmallWorld))
       SmallWorldEdges = readRDS(paste(savingDir,NameSmallWorld,sep =""), refhook = NULL)
-
+      degreeDistributionPlot(givenObject=SmallWorldEdges,savingDir,graphtype=NameSmallWorld)
 
       dfScaleFreeMultiPlot = Plot2dListOfRandomGraphPropertiesMean(Scalefree,x="NumberofEdges",y="GlobalClusteringCoefficent",xlabel = "Number of Edges",ylabel = "Global Clustering Coefficent")
       dfScaleFreeMultiPlot = cbind(dfScaleFreeMultiPlot,networkType=NameScaleFree)
@@ -575,6 +581,92 @@ DelRandomEdge <- function(graphObj)
 
 }
 
+#library(igraph)
+
+#test1 = erdos.renyi.game(n=10000,p=50000, type = "gnm", directed = FALSE,loops = FALSE)
+#test2 = erdos.renyi.game(n=10000,p=50000, type = "gnm", directed = FALSE,loops = FALSE)
+
+#degree(test1)
+#degree(test2)
+#degreeDist<-1
+#degreeDist<-degree(test1,normalized = FALSE)
+#h1=hist(degreeDist)
+
+#h1$density
+#h2$density
+#hMeanDen<-hist(degreeDist)
+
+#hMeanDen$density = (h1$density+h2$density)/2
+
+#h1$breaks
+#h2$breaks
+#hMeanDen$breaks
+
+
+#h1$counts
+#h2$counts
+#hMeanDen$counts
+
+#plot(hMeanDen)
+
+#degreeDist<-degree(test2,normalized = FALSE)
+#h2=hist(degreeDist)
+
+
+#degreeDist<-degree(test,normalized = TRUE)
+#hist(degreeDist)
+
+
+#list(degreeDist)
+#plot(degreeDist)
+#plot(degreeDist,log="xy",ylim=c(.01,10), bg="black",pch=21, xlab="Degree", ylab="Cumulative Frequency")
+
+
+degreeDistributionPlot<- function(givenObjects,SavingDir,graphtype)
+{
+
+ # savingDir = "E:\\netsim\\"
+ # randomGraphEdgeComparisn = readRDS(paste(savingDir,"randomGraphEdgeComparisn",sep =""), refhook = NULL)
+ # givenObject = randomGraphEdgeComparisn
+ # paramName="Degree"
+ # graphtype="random"
+
+
+
+  totalNumberofSamples = length(givenObjects)
+
+
+    mainDir<-SavingDir
+    subDir<-"DegreeDist"
+    subsubDir<-paste(mainDir,"\\",subDir,"\\",sep="")
+    dir.create(file.path(mainDir, subDir), showWarnings = FALSE)
+    dir.create(file.path(subsubDir,graphtype), showWarnings = FALSE)
+
+
+
+    for (i in 1:totalNumberofSamples) {
+      SampleProperties=as.data.frame(givenObjects[[1]][[1]])
+      SampleCentralityAll =givenObject[[1]][[2]]
+   j<-2
+     NetWithHowManyDiffVertices<- length(SampleProperties[[1]][])
+      for (j in 1:NetWithHowManyDiffVertices) {
+        VerticesSize <- SampleProperties[["Vertices"]][j]
+        EdgesSize<- SampleProperties[["NumberOfEdges"]][j]
+        DegreeCentralityVect<-as.vector( SampleCentralityAll[j] )
+
+        jpeg(paste(subsubDir,graphtype,"\\","sample",i,graphtype,"v",VerticesSize,"E",EdgesSize,".jpg",sep=""))
+        plot(hist(DegreeCentralityVect[[1]]))
+        dev.off()
+      }
+
+      counter=counter+1
+
+    }
+
+
+
+}
+
 
 ERGraphRandomPropertiesGNM2<- function(n1=NULL,p1=NULL,n2=NULL,p2=NULL,VectorVertices=NULL,VectorEdges=NULL,PstepSize,sampleSize)
 {
@@ -584,6 +676,7 @@ ERGraphRandomPropertiesGNM2<- function(n1=NULL,p1=NULL,n2=NULL,p2=NULL,VectorVer
   Probability<-1
   Vertices<-1
   NumberOfEdges<-1
+  DegreeDist<-1
 
   CentralityDegreeMean<- 1
   CentralityClosenessMean<-1
@@ -613,8 +706,7 @@ ERGraphRandomPropertiesGNM2<- function(n1=NULL,p1=NULL,n2=NULL,p2=NULL,VectorVer
     e=VectorEdges[[counter1]]
 
     erRandGraph = erdos.renyi.game(n=n,p=e, type = "gnm", directed = FALSE,loops = FALSE)
-    ##print(paste(" Edges ",e))
-    # #print(paste(" vertices ",n))
+
     #calculation of properties from graph
 
     Degree = degree(erRandGraph, normalized = FALSE)
@@ -1089,6 +1181,10 @@ Plot2dListOfRandomGraphPropertiesMean<- function(givenObject,x,y,xlabel,ylabel)
 
   }
   else if(is.null(dim(givenObject))==TRUE){
+    #x="NumberOfEdges"
+    #y="AvgGeodesicPath"
+   # #xlabel = "Number of Edges"
+    #ylabel = "Avg Geodesic Path"
 
     xCounter<-0
     yCounter<-0
