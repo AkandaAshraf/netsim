@@ -79,6 +79,8 @@ gen_graphs<- function(ScaleFreePowerRange,SmallWorldProbability,VerticesVector,S
 
     print("loading serialized object-randomGraphEdgeComparisn from hdd")
     randomGraphEdgeComparisn = readRDS(paste(savingDir,"randomGraphEdgeComparisn",sep =""), refhook = NULL)
+    #testing
+    degreeDistributionPlot(givenObjects=randomGraphEdgeComparisn,SavingDir=savingDir,graphtype="random")
 
     dfRandomTemp = Plot2dListOfRandomGraphPropertiesMean(randomGraphEdgeComparisn,x="NumberOfEdges",y="GlobalClusteringCoefficent",xlabel = "Number of Edges",ylabel = "Global Clustering Coefficent")
     dfRandomTemp = cbind(dfRandomTemp,networkType="randomGraph")
@@ -128,9 +130,13 @@ gen_graphs<- function(ScaleFreePowerRange,SmallWorldProbability,VerticesVector,S
         print(paste("loading serialized object from hdd:",NameScaleFree))
         Scalefree = readRDS(paste(savingDir,NameScaleFree,sep =""), refhook = NULL)
 
+        degreeDistributionPlot(givenObjects=Scalefree,SavingDir=savingDir,graphtype=NameScaleFree)
+
+
         print(paste("loading serialized object from hdd:",NameSmallWorld))
         SmallWorldEdges = readRDS(paste(savingDir,NameSmallWorld,sep =""), refhook = NULL)
 
+        degreeDistributionPlot(givenObjects=SmallWorldEdges,SavingDir=savingDir,graphtype=NameSmallWorld)
 
         dfScaleFreeMultiPlot = Plot2dListOfRandomGraphPropertiesMean(Scalefree,x="NumberofEdges",y="GlobalClusteringCoefficent",xlabel = "Number of Edges",ylabel = "Global Clustering Coefficent")
         dfScaleFreeMultiPlot = cbind(dfScaleFreeMultiPlot,networkType=NameScaleFree)
