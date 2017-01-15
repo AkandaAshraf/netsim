@@ -322,6 +322,7 @@ gen_plots<- function(ScaleFreePowerRange,SmallWorldProbability,plot=C("point","l
   degreeDistributionPlot(givenObjects=randomGraphEdgeComparisn,SavingDir=savingDir,graphtype="random")
 
 
+
   dfRandomTemp = Plot2dListOfRandomGraphPropertiesMean(randomGraphEdgeComparisn,x="NumberOfEdges",y="GlobalClusteringCoefficent",xlabel = "Number of Edges",ylabel = "Global Clustering Coefficent")
   dfRandomTemp = cbind(dfRandomTemp,networkType="randomGraph")
   DfEdgeGlobalClusteringCoefficent<-rbind(DfEdgeGlobalClusteringCoefficent,dfRandomTemp)
@@ -370,12 +371,13 @@ gen_plots<- function(ScaleFreePowerRange,SmallWorldProbability,plot=C("point","l
       print(paste("loading serialized object from hdd:",NameScaleFree))
       Scalefree = readRDS(paste(savingDir,NameScaleFree,sep =""), refhook = NULL)
       #Testing
-      degreeDistributionPlot(givenObject=Scalefree,savingDir,graphtype=NameScaleFree)
+      degreeDistributionPlot(givenObjects=Scalefree,SavingDir=savingDir,graphtype=NameScaleFree)
 
 
       print(paste("loading serialized object from hdd:",NameSmallWorld))
       SmallWorldEdges = readRDS(paste(savingDir,NameSmallWorld,sep =""), refhook = NULL)
-      degreeDistributionPlot(givenObject=SmallWorldEdges,savingDir,graphtype=NameSmallWorld)
+
+      degreeDistributionPlot(givenObjects=SmallWorldEdges,SavingDir=savingDir,graphtype=NameSmallWorld)
 
       dfScaleFreeMultiPlot = Plot2dListOfRandomGraphPropertiesMean(Scalefree,x="NumberofEdges",y="GlobalClusteringCoefficent",xlabel = "Number of Edges",ylabel = "Global Clustering Coefficent")
       dfScaleFreeMultiPlot = cbind(dfScaleFreeMultiPlot,networkType=NameScaleFree)
@@ -652,7 +654,7 @@ degreeDistributionPlot<- function(givenObjects,SavingDir,graphtype)
 
     for (i in 1:totalNumberofSamples) {
       SampleProperties=as.data.frame(givenObjects[[1]][[1]])
-      SampleCentralityAll =givenObject[[1]][[2]]
+      SampleCentralityAll =givenObjects[[1]][[2]]
    j<-2
      NetWithHowManyDiffVertices<- length(SampleProperties[[1]][])
       for (j in 1:NetWithHowManyDiffVertices) {
@@ -663,9 +665,21 @@ degreeDistributionPlot<- function(givenObjects,SavingDir,graphtype)
         jpeg(paste(subsubDir,graphtype,"\\","sample",i,graphtype,"v",VerticesSize,"E",EdgesSize,".jpg",sep=""))
         plot(hist(DegreeCentralityVect[[1]]))
         dev.off()
+
+
+
+        # Histogram overlaid with kernel density curve
+      #  ggplot(dat, aes(x=rating)) +
+        #  geom_histogram(aes(y=..density..),      # Histogram with density instead of count on y-axis
+        #                 binwidth=.5,
+         #                colour="black", fill="white") +
+        #  geom_density(alpha=.2, fill="#FF6666")  # Overlay with transparent density plot
+
+
+
+
       }
 
-      counter=counter+1
 
     }
 
