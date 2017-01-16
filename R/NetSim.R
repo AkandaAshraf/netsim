@@ -127,16 +127,23 @@ gen_graphs<- function(ScaleFreePowerRange,SmallWorldProbability,VerticesVector,S
         NameSmallWorld <- paste("SmallWorld",probabilitysw,sep ="")
         NameFileName <- paste("sc",powersf,"sw",probabilitysw,sep ="")
 
+
+
         print(paste("loading serialized object from hdd:",NameScaleFree))
         Scalefree = readRDS(paste(savingDir,NameScaleFree,sep =""), refhook = NULL)
-
         degreeDistributionPlot(givenObjects=Scalefree,SavingDir=savingDir,graphtype=NameScaleFree)
+
+        NameScaleFree <- paste("SF (alpha=",powersf,")",sep ="")
+
 
 
         print(paste("loading serialized object from hdd:",NameSmallWorld))
         SmallWorldEdges = readRDS(paste(savingDir,NameSmallWorld,sep =""), refhook = NULL)
 
         degreeDistributionPlot(givenObjects=SmallWorldEdges,SavingDir=savingDir,graphtype=NameSmallWorld)
+        NameSmallWorld <- paste("SW (P=",probabilitysw,")",sep ="")
+
+
 
         dfScaleFreeMultiPlot = Plot2dListOfRandomGraphPropertiesMean(Scalefree,x="NumberofEdges",y="GlobalClusteringCoefficent",xlabel = "Number of Edges",ylabel = "Global Clustering Coefficent")
         dfScaleFreeMultiPlot = cbind(dfScaleFreeMultiPlot,networkType=NameScaleFree)
@@ -263,7 +270,7 @@ gen_graphs<- function(ScaleFreePowerRange,SmallWorldProbability,VerticesVector,S
   }
 
 
-  print("Completed!( Number of Edges = Number of Vertices*2-3, this is to match the number of vertices in all three graps) ")
+  print("Completed!( Number of Edges = Number of Vertices*2-3, this is to match the number of vertices in all three networks) ")
   # Stop the clock
   print("user time:execution of the code, system time:CPU ,elapsed time: total")
   proc.time() - ptm
@@ -318,6 +325,8 @@ gen_plots<- function(ScaleFreePowerRange,SmallWorldProbability,plot=C("point","l
 
   print("loading serialized object-randomGraphEdgeComparisn from hdd")
   randomGraphEdgeComparisn = readRDS(paste(savingDir,"randomGraphEdgeComparisn",sep =""), refhook = NULL)
+
+
   #Testing
   degreeDistributionPlot(givenObjects=randomGraphEdgeComparisn,SavingDir=savingDir,graphtype="random")
 
@@ -372,12 +381,14 @@ gen_plots<- function(ScaleFreePowerRange,SmallWorldProbability,plot=C("point","l
       Scalefree = readRDS(paste(savingDir,NameScaleFree,sep =""), refhook = NULL)
       #Testing
       degreeDistributionPlot(givenObjects=Scalefree,SavingDir=savingDir,graphtype=NameScaleFree)
-
+      NameScaleFree <- paste("SF (alpha=",powersf,")",sep ="")
 
       print(paste("loading serialized object from hdd:",NameSmallWorld))
       SmallWorldEdges = readRDS(paste(savingDir,NameSmallWorld,sep =""), refhook = NULL)
 
       degreeDistributionPlot(givenObjects=SmallWorldEdges,SavingDir=savingDir,graphtype=NameSmallWorld)
+
+      NameSmallWorld <- paste("SW (P=",probabilitysw,")",sep ="")
 
       dfScaleFreeMultiPlot = Plot2dListOfRandomGraphPropertiesMean(Scalefree,x="NumberofEdges",y="GlobalClusteringCoefficent",xlabel = "Number of Edges",ylabel = "Global Clustering Coefficent")
       dfScaleFreeMultiPlot = cbind(dfScaleFreeMultiPlot,networkType=NameScaleFree)
@@ -548,7 +559,7 @@ gen_plots<- function(ScaleFreePowerRange,SmallWorldProbability,plot=C("point","l
 
 
 
-  print("Completed!( Number of Edges = Number of Vertices*2-3, this is to match the number of vertices in all three graps) ")
+  print("Completed!( Number of Edges = Number of Vertices*2-3, this is to match the number of vertices in all three networks) ")
   # Stop the clock
   print("user time:execution of the code, system time:CPU ,elapsed time: total")
   proc.time() - ptm
@@ -633,11 +644,11 @@ DelRandomEdge <- function(graphObj)
 degreeDistributionPlot<- function(givenObjects,SavingDir,graphtype)
 {
 
- # savingDir = "E:\\netsim\\"
- # randomGraphEdgeComparisn = readRDS(paste(savingDir,"randomGraphEdgeComparisn",sep =""), refhook = NULL)
- # givenObject = randomGraphEdgeComparisn
+# savingDir = "E:\\netsim\\"
+#  randomGraphEdgeComparisn = readRDS(paste(savingDir,"randomGraphEdgeComparisn",sep =""), refhook = NULL)
+# givenObjects = randomGraphEdgeComparisn
  # paramName="Degree"
- # graphtype="random"
+  #graphtype="random"
 
 
 
@@ -651,29 +662,52 @@ degreeDistributionPlot<- function(givenObjects,SavingDir,graphtype)
     dir.create(file.path(subsubDir,graphtype), showWarnings = FALSE)
 
 
-
     for (i in 1:totalNumberofSamples) {
-      SampleProperties=as.data.frame(givenObjects[[1]][[1]])
-      SampleCentralityAll =givenObjects[[1]][[2]]
-   j<-2
+      SampleProperties=as.data.frame(givenObjects[[i]][[1]])
+      SampleCentralityAll =givenObjects[[i]][[2]]
+
      NetWithHowManyDiffVertices<- length(SampleProperties[[1]][])
+
+
       for (j in 1:NetWithHowManyDiffVertices) {
         VerticesSize <- SampleProperties[["Vertices"]][j]
         EdgesSize<- SampleProperties[["NumberOfEdges"]][j]
-        DegreeCentralityVect<-as.vector( SampleCentralityAll[j] )
+        Degree<-as.vector( SampleCentralityAll[[j]] )
 
-        jpeg(paste(subsubDir,graphtype,"\\","sample",i,graphtype,"v",VerticesSize,"E",EdgesSize,".jpg",sep=""))
-        plot(hist(DegreeCentralityVect[[1]]))
-        dev.off()
+       # names(df)[names(df) == 'old.var.name'] <- 'new.var.name'
+
+      #  jpeg(paste(subsubDir,graphtype,"\\","sample",i,graphtype,"v",VerticesSize,"E",EdgesSize,".jpg",sep=""))
+
+         # plot(hist(DegreeCentralityVect[[1]]))
+       # dev.off()
 
 
 
         # Histogram overlaid with kernel density curve
-      #  ggplot(dat, aes(x=rating)) +
-        #  geom_histogram(aes(y=..density..),      # Histogram with density instead of count on y-axis
-        #                 binwidth=.5,
-         #                colour="black", fill="white") +
-        #  geom_density(alpha=.2, fill="#FF6666")  # Overlay with transparent density plot
+        # Histogram overlaid with kernel density curve
+       # vectorTest <-c(10,10,1,2,3,5,4,5,1,2,1,5,2,1,51,1,1,1,1,2,5,6,7,9,7)
+        #library(ggplot2)
+
+
+
+        dframe<-as.data.frame(Degree)
+
+
+       # ggplot(dframe, aes(x=degree)) + geom_density()
+
+    #   jpeg(paste(subsubDir,graphtype,"\\","sample",i,graphtype,"v",VerticesSize,"E",EdgesSize,".jpg",sep=""))
+
+      gplot<-  ggplot(dframe, aes(x=Degree)) +
+          geom_histogram(aes(y=..density..),      # Histogram with density instead of count on y-axis
+                         binwidth=.5,
+                         colour="black", fill="white") +
+          geom_density(alpha=.2, fill="#FF6666")  # Overlay with transparent density plot
+
+
+
+     # ggsave(plot =gplot)
+
+  ggsave(plot =gplot, filename = paste("sample",i,graphtype,"v",VerticesSize,"E",EdgesSize,".jpg",sep=""), path =paste(subsubDir,graphtype,sep=""))
 
 
 
