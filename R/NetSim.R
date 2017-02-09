@@ -10,7 +10,7 @@
 #' @import ggplot2
 #' @export
 
-gen_graphs<- function(ScaleFreePowerRange,SmallWorldProbability,VerticesVector,SampleSize,edgesEachScaleFree,savingDir,plotGraph="y")
+gen_graphs<- function(ScaleFreePowerRange,SmallWorldProbability,VerticesVector,SampleSize,edgesEachScaleFree,savingDir,plotGraph="y",GenDegreeDist)
 {
   #require('igraph')
 
@@ -80,6 +80,8 @@ gen_graphs<- function(ScaleFreePowerRange,SmallWorldProbability,VerticesVector,S
     print("loading serialized object-randomGraphEdgeComparisn from hdd")
     randomGraphEdgeComparisn = readRDS(paste(savingDir,"randomGraphEdgeComparisn",sep =""), refhook = NULL)
     #testing
+
+    if(GenDegreeDist)
     degreeDistributionPlot(givenObjects=randomGraphEdgeComparisn,SavingDir=savingDir,graphtype="random")
 
     dfRandomTemp = Plot2dListOfRandomGraphPropertiesMean(randomGraphEdgeComparisn,x="NumberOfEdges",y="GlobalClusteringCoefficent",xlabel = "Number of Edges",ylabel = "Global Clustering Coefficent")
@@ -131,6 +133,8 @@ gen_graphs<- function(ScaleFreePowerRange,SmallWorldProbability,VerticesVector,S
 
         print(paste("loading serialized object from hdd:",NameScaleFree))
         Scalefree = readRDS(paste(savingDir,NameScaleFree,sep =""), refhook = NULL)
+
+        if(GenDegreeDist)
         degreeDistributionPlot(givenObjects=Scalefree,SavingDir=savingDir,graphtype=NameScaleFree)
 
         NameScaleFree <- paste("SF (alpha=",powersf,")",sep ="")
@@ -140,6 +144,8 @@ gen_graphs<- function(ScaleFreePowerRange,SmallWorldProbability,VerticesVector,S
         print(paste("loading serialized object from hdd:",NameSmallWorld))
         SmallWorldEdges = readRDS(paste(savingDir,NameSmallWorld,sep =""), refhook = NULL)
 
+
+        if(GenDegreeDist)
         degreeDistributionPlot(givenObjects=SmallWorldEdges,SavingDir=savingDir,graphtype=NameSmallWorld)
         NameSmallWorld <- paste("SW (P=",probabilitysw,")",sep ="")
 
@@ -288,7 +294,7 @@ gen_graphs<- function(ScaleFreePowerRange,SmallWorldProbability,VerticesVector,S
 #' @import igraph
 #' @import ggplot2
 #' @export
-gen_plots<- function(ScaleFreePowerRange,SmallWorldProbability,plot=C("point","line"),savingDir)
+gen_plots<- function(ScaleFreePowerRange,SmallWorldProbability,plot=C("point","line"),savingDir,GenDegreeDist)
 {
   #  require('igraph')
   #  require('ggplot2')
@@ -327,7 +333,8 @@ gen_plots<- function(ScaleFreePowerRange,SmallWorldProbability,plot=C("point","l
   randomGraphEdgeComparisn = readRDS(paste(savingDir,"randomGraphEdgeComparisn",sep =""), refhook = NULL)
 
 
-  #Testing
+
+  if(GenDegreeDist)
   degreeDistributionPlot(givenObjects=randomGraphEdgeComparisn,SavingDir=savingDir,graphtype="random")
 
 
@@ -380,12 +387,16 @@ gen_plots<- function(ScaleFreePowerRange,SmallWorldProbability,plot=C("point","l
       print(paste("loading serialized object from hdd:",NameScaleFree))
       Scalefree = readRDS(paste(savingDir,NameScaleFree,sep =""), refhook = NULL)
       #Testing
+
+      if(GenDegreeDist)
       degreeDistributionPlot(givenObjects=Scalefree,SavingDir=savingDir,graphtype=NameScaleFree)
+
       NameScaleFree <- paste("SF (alpha=",powersf,")",sep ="")
 
       print(paste("loading serialized object from hdd:",NameSmallWorld))
       SmallWorldEdges = readRDS(paste(savingDir,NameSmallWorld,sep =""), refhook = NULL)
 
+      if(GenDegreeDist)
       degreeDistributionPlot(givenObjects=SmallWorldEdges,SavingDir=savingDir,graphtype=NameSmallWorld)
 
       NameSmallWorld <- paste("SW (P=",probabilitysw,")",sep ="")
